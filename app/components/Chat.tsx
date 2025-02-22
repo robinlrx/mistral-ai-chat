@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mistral } from '@mistralai/mistralai';
 import Loader from './Loader';
 
@@ -11,6 +11,13 @@ export default function Chat() {
 
 	const [messages, setMessages] = useState([]);
 	const [userQuestion, setUserQuestion] = useState('');
+	const chatboxRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (chatboxRef.current) {
+			chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+		}
+	}, [messages]);
 
 
 	const handleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -44,7 +51,7 @@ export default function Chat() {
 		<div className='h-full bg-neutral-100 flex flex-col justify-center items-center py-3'>
 			<h1 className='md:text-6xl text-4xl text-black'>RobIA</h1>
 			{/* chatbox */}
-			<div className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-4'>
+			<div ref={chatboxRef} className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-4'>
 				{messages.map((message: any, index) => (
 					<div key={index}>
 						<p className='p-4 bg-red-300 rounded-xl justify-self-end max-w-2xl mb-2 text-black'>{message.user}</p>
