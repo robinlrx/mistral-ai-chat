@@ -19,3 +19,11 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer components {
+	.message-bubble {
+		@apply p-4 rounded-xl max-w-2xl text-black;
+		border: 1px solid rgba(0, 0, 0, .05);
+		box-shadow: 3px 5px 5px rgba(0, 0, 0, .05);
+	}
+}

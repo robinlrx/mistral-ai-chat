@@ -2,10 +2,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mistral } from '@mistralai/mistralai';
 import Loader from './Loader';
+import { Libre_Baskerville } from 'next/font/google';
 
 // init mistral ai
 const apiKey = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
 const client = new Mistral({apiKey: apiKey});
+
+// google font
+const libreBaskerville = Libre_Baskerville({
+	weight: "400",
+	style: "normal",
+	subsets: ["latin"],
+})
 
 export default function Chat() {
 
@@ -48,15 +56,15 @@ export default function Chat() {
 		}
 
 	return (
-		<div className='h-full bg-neutral-100 flex flex-col justify-center items-center py-3'>
-			<h1 className='md:text-6xl text-4xl text-black'>RobIA</h1>
+		<div className='h-full bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
+			<h1 className={`md:text-6xl text-4xl text-black ${libreBaskerville.className}`}>RobIA</h1>
 			{/* chatbox */}
 			<div ref={chatboxRef} className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-4'>
 				{messages.map((message: any, index) => (
 					<div key={index}>
-						<p className='p-4 bg-red-300 rounded-xl justify-self-end max-w-2xl mb-2 text-black'>{message.user}</p>
+						<p className='bg-[#E5E3D9] justify-self-end mb-2 message-bubble'>{message.user}</p>
 						{message.ai ? (
-							<p className='p-4 bg-orange-300 rounded-xl justify-self-start max-w-2xl text-black'>{message.ai}</p>
+							<p className='bg-[#FAF9F7]  justify-self-start message-bubble'>{message.ai}</p>
 						) : (
 							// loader
 							<Loader />
@@ -66,7 +74,7 @@ export default function Chat() {
 				))}
 			</div>
 			{/* textbox */}
-			<div className="mt-auto flex w-full max-w-screen-lg p-2 m-4 rounded">
+			<div className="mt-auto flex w-full max-w-screen-lg p-2 rounded">
 				<input
 					type="text"
 					value={userQuestion}
@@ -77,7 +85,7 @@ export default function Chat() {
 					type="button"
 					value="Envoyer"
 					onClick={handleMessage}
-					className="w-1/5 rounded-r-lg bg-sky-500 font-bold text-white cursor-pointer"
+					className="w-1/5 rounded-r-lg bg-[#D97757] font-bold text-white cursor-pointer"
 				/>
 			</div>
 		</div>
