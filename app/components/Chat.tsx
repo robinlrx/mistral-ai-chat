@@ -85,7 +85,7 @@ export default function Chat() {
 					type="button"
 					value="Envoyer"
 					onClick={handleMessage}
-					className="w-1/5 rounded-r-lg bg-[#D97757] font-bold text-white cursor-pointer"
+					className="w-1/5 rounded-r-lg bg-[#d97757] font-bold text-white cursor-pointer"
 				/>
 			</div>
 		</div>
