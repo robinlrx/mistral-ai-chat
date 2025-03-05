@@ -8,6 +8,7 @@ import Loader from './Loader';
 // libs
 import { Mistral } from '@mistralai/mistralai';
 import Markdown from 'react-markdown';
+import remarkGfm from "remark-gfm";
 
 // init mistral ai
 const apiKey = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
@@ -70,7 +71,7 @@ export default function Chat() {
 					<div key={index}>
 						<p className='bg-[#E5E3D9] justify-self-end mb-2 message-bubble'>{message.user}</p>
 						{message.ai ? (
-							<div className='bg-[#FAF9F7] justify-self-start message-bubble'><Markdown>{message.ai}</Markdown></div>
+							<div className='bg-[#FAF9F7] justify-self-start message-bubble space-y-2'><Markdown remarkPlugins={[remarkGfm]}>{message.ai}</Markdown></div>
 						) : (
 							// loader
 							<Loader />

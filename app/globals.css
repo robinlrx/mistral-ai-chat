@@ -20,6 +20,41 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+h3 {
+	@apply text-lg font-medium
+}
+
+/* list taiwind */
+ul {
+	@apply list-disc list-inside
+}
+
+/* table tailwind */
+table {
+	@apply table-auto border-collapse border border-gray-400
+}
+
+thead {
+	@apply bg-gray-200
+}
+
+th {
+	@apply border border-gray-500 p-4 text-left font-semibold
+}
+
+td {
+	@apply border border-gray-500 p-4
+}
+
+tbody tr:nth-child(odd) {
+	@apply bg-gray-100
+}
+
+tbody tr:nth-child(even) {
+	@apply bg-gray-300
+}
+
+/* tailwind components */
 @layer components {
 	.message-bubble {
 		@apply p-4 rounded-xl max-w-2xl text-black;
