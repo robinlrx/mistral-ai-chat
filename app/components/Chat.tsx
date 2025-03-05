@@ -56,7 +56,7 @@ export default function Chat() {
 		}
 
 	return (
-		<div className='h-full bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
+		<div className='h-svh bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
 			<h1 className={`md:text-6xl text-4xl text-black ${libreBaskerville.className}`}>RobIA</h1>
 			{/* chatbox */}
 			<div ref={chatboxRef} className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-4'>
