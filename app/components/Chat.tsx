@@ -28,13 +28,6 @@ export default function Chat() {
 		}
 	}, [messages]);
 
-	// do not take mobile keybord to change height
-	useEffect(() => {
-		if ("virtualKeyboard" in navigator) {
-			(navigator as any).virtualKeyboard.overlaysContent = true;
-		}
-	}, []);
-
 
 	const handleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
 		setUserQuestion(e.target.value);
@@ -87,6 +80,7 @@ export default function Chat() {
 					type="text"
 					value={userQuestion}
 					onChange={handleChange}
+					onKeyDown={(e) => e.key === "Enter" && handleMessage()}
 					className="w-4/5 p-2 border rounded-l-lg text-black"
 				/>
 				<input
