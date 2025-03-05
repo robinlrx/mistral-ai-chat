@@ -60,7 +60,7 @@ export default function Chat() {
 		<div className='h-dvh bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
 			<h1 className={`md:text-6xl text-4xl text-black ${libreBaskerville.className}`}>RobIA</h1>
 			{/* chatbox */}
-			<div ref={chatboxRef} className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-4'>
+			<div ref={chatboxRef} className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-2'>
 				{messages.map((message: any, index) => (
 					<div key={index}>
 						<p className='bg-[#E5E3D9] justify-self-end mb-2 message-bubble'>{message.user}</p>
