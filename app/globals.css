@@ -20,13 +20,25 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* heading tailwind */
+h3, h4 {
+	@apply font-medium
+}
+
 h3 {
-	@apply text-lg font-medium
+	@apply text-lg
 }
 
 /* list taiwind */
+ol, ul {
+	@apply list-inside
+}
 ul {
-	@apply list-disc list-inside
+	@apply list-disc
+}
+
+ol {
+	@apply list-decimal
 }
 
 /* table tailwind */
