@@ -21,11 +21,19 @@ export default function Chat() {
 	const [userQuestion, setUserQuestion] = useState('');
 	const chatboxRef = useRef<HTMLDivElement>(null);
 
+	// auto scroll to bottom when new message is displayed
 	useEffect(() => {
 		if (chatboxRef.current) {
 			chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
 		}
 	}, [messages]);
+
+	// do not take mobile keybord to change height
+	useEffect(() => {
+		if ("virtualKeyboard" in navigator) {
+			(navigator as any).virtualKeyboard.overlaysContent = true;
+		}
+	}, []);
 
 
 	const handleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -34,7 +42,7 @@ export default function Chat() {
 
 	const handleMessage = async () => {
 		if (userQuestion.trim() === '') return;
-			// Ajouter immédiatement la question de l'utilisateur
+			// add user question
 			// @ts-ignore
 			setMessages((prevMessages) => [...prevMessages, { user: userQuestion, ai: '' } ]);
 			setUserQuestion('');
@@ -50,13 +58,13 @@ export default function Chat() {
 		
 			const aiResponse = await chatAi();
 		
-			// Mettre à jour le dernier message avec la réponse de l'IA
+			// update last message with ai response
 			// @ts-ignore
 			setMessages((prevMessages) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
 		}
 
 	return (
-		<div className='h-dvh bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
+		<div className='h-svh bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
 			<h1 className={`md:text-6xl text-4xl text-black ${libreBaskerville.className}`}>RobIA</h1>
 			{/* chatbox */}
 			<div ref={chatboxRef} className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-4'>
