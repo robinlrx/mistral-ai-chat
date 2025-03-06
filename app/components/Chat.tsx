@@ -10,6 +10,7 @@ import Textbox from './Textbox';
 import { Mistral } from '@mistralai/mistralai';
 import Markdown from 'react-markdown';
 import remarkGfm from "remark-gfm";
+import { ContentChunk } from '@mistralai/mistralai/models/components';
 
 // init mistral ai
 const apiKey = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
@@ -22,9 +23,15 @@ const libreBaskerville = Libre_Baskerville({
 	subsets: ["latin"],
 })
 
+// types
+type Message = {
+	user: string;
+	ai: string | ContentChunk[] | undefined;
+}
+
 export default function Chat() {
 
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState<Message[]>([]);
 	const [userQuestion, setUserQuestion] = useState('');
 	const chatboxRef = useRef<HTMLDivElement>(null);
 
@@ -43,8 +50,7 @@ export default function Chat() {
 	const handleMessage = async () => {
 		if (userQuestion.trim() === '') return;
 			// add user question
-			// @ts-ignore
-			setMessages((prevMessages) => [...prevMessages, { user: userQuestion, ai: '' } ]);
+			setMessages((prevMessages: Message[]) => [...prevMessages, { user: userQuestion, ai: '' } ]);
 			setUserQuestion('');
 		
 			const chatAi = async () => {
@@ -52,27 +58,31 @@ export default function Chat() {
 					model: 'mistral-large-latest',
 					messages: [{ role: 'user', content: userQuestion }],
 				});
-				// @ts-ignore
-				return chatResponse.choices[0].message.content;
+
+				if (chatResponse && chatResponse.choices && chatResponse.choices.length > 0) return chatResponse.choices[0].message?.content || 'No content available';
+				
 			};
 		
 			const aiResponse = await chatAi();
 		
 			// update last message with ai response
-			// @ts-ignore
-			setMessages((prevMessages) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
+			setMessages((prevMessages: Message[]) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
 		}
 
 	return (
 		<div className='h-dvh bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
 			<h1 className={`md:text-6xl text-4xl text-black ${libreBaskerville.className}`}>RobIA</h1>
+
 			{/* chatbox */}
 			<div ref={chatboxRef} className='w-full max-w-screen-lg h-full flex flex-col overflow-auto p-2'>
-				{messages.map((message: any, index) => (
+				{messages.map((message: Message, index: number) => (
 					<div key={index}>
 						<p className='bg-[#E5E3D9] justify-self-end mb-2 message-bubble'>{message.user}</p>
 						{message.ai ? (
-							<div className='bg-[#FAF9F7] justify-self-start message-bubble space-y-2'><Markdown remarkPlugins={[remarkGfm]}>{message.ai}</Markdown></div>
+							<div className='bg-[#FAF9F7] justify-self-start message-bubble space-y-2'>
+								{/* @ts-ignore */}
+								<Markdown remarkPlugins={[remarkGfm]}>{message.ai}</Markdown>
+							</div>
 						) : (
 							// loader
 							<Loader />
@@ -81,6 +91,7 @@ export default function Chat() {
 					</div>
 				))}
 			</div>
+
 			{/* textbox */}
 			<Textbox 
 				userValue={userQuestion}
