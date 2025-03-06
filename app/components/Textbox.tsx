@@ -9,7 +9,7 @@ type TextboxProps = {
 
 const Textbox = ({userValue, onChange, onKeyDown, onClick}: TextboxProps) => {
 	return (
-		<div className="mt-auto flex w-full max-w-screen-lg p-2 rounded">
+		<div className="flex w-full max-w-screen-lg p-2 rounded">
 			<input
 				type="text"
 				value={userValue}
