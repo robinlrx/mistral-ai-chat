@@ -49,25 +49,25 @@ export default function Chat() {
 
 	const handleMessage = async () => {
 		if (userQuestion.trim() === '') return;
-			// add user question
-			setMessages((prevMessages: Message[]) => [...prevMessages, { user: userQuestion, ai: '' } ]);
-			setUserQuestion('');
+		// add user question
+		setMessages((prevMessages: Message[]) => [...prevMessages, { user: userQuestion, ai: '' } ]);
+		setUserQuestion('');
 		
-			const chatAi = async () => {
-				const chatResponse = await client.chat.complete({
-					model: 'mistral-large-latest',
-					messages: [{ role: 'user', content: userQuestion }],
-				});
+		const chatAi = async () => {
+			const chatResponse = await client.chat.complete({
+				model: 'mistral-large-latest',
+				messages: [{ role: 'user', content: userQuestion }],
+			});
 
-				if (chatResponse && chatResponse.choices && chatResponse.choices.length > 0) return chatResponse.choices[0].message?.content || 'No content available';
-				
-			};
+			if (chatResponse && chatResponse.choices && chatResponse.choices.length > 0) return chatResponse.choices[0].message?.content || 'No content available';
+			
+		};
 		
-			const aiResponse = await chatAi();
-		
-			// update last message with ai response
-			setMessages((prevMessages: Message[]) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
-		}
+		const aiResponse = await chatAi();
+	
+		// update last message with ai response
+		setMessages((prevMessages: Message[]) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
+	}
 
 	return (
 		<div className='h-dvh bg-[#F0EEE6] flex flex-col justify-center items-center py-3'>
