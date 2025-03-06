@@ -7,14 +7,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-	themeColor: '#E5E3D9',
+	themeColor: '#F0EEE6',
 }
 
 export default function RootLayout({ children, }: 
 	Readonly<{ children: React.ReactNode; }>) {
 	return (
-		<html lang="en" style={{ background: 'black' }}>
-		<body style={{ background: '#E5E3D9' }}>
+		<html lang="en">
+		<body>
 			{children}
 		</body>
 		</html>
