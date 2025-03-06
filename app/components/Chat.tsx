@@ -4,6 +4,7 @@ import { Libre_Baskerville } from 'next/font/google';
 
 // components
 import Loader from './Loader';
+import Textbox from './Textbox';
 
 // libs
 import { Mistral } from '@mistralai/mistralai';
@@ -81,21 +82,12 @@ export default function Chat() {
 				))}
 			</div>
 			{/* textbox */}
-			<div className="mt-auto flex w-full max-w-screen-lg p-2 rounded">
-				<input
-					type="text"
-					value={userQuestion}
-					onChange={handleChange}
-					onKeyDown={(e) => e.key === "Enter" && handleMessage()}
-					className="w-4/5 p-2 border rounded-l-lg text-black"
-				/>
-				<input
-					type="button"
-					value="Envoyer"
-					onClick={handleMessage}
-					className="w-1/5 rounded-r-lg bg-[#d97757] font-bold text-white cursor-pointer"
-				/>
-			</div>
+			<Textbox 
+				userValue={userQuestion}
+				onChange={handleChange}
+				onKeyDown={(e) => e.key === "Enter" && handleMessage()}
+				onClick={handleMessage}
+			/>
 		</div>
 	);
 }
