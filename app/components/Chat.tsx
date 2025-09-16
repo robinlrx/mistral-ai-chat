@@ -54,13 +54,18 @@ export default function Chat() {
 		setUserQuestion('');
 		
 		const chatAi = async () => {
-			const chatResponse = await client.chat.complete({
-				model: 'mistral-large-latest',
-				messages: [{ role: 'user', content: userQuestion }],
-			});
+			try {
 
-			if (chatResponse && chatResponse.choices && chatResponse.choices.length > 0) return chatResponse.choices[0].message?.content || 'No content available';
-			
+				const chatResponse = await client.chat.complete({
+					model: 'mistral-small-latest',
+					messages: [{ role: 'user', content: userQuestion }],
+				});
+
+				if (chatResponse && chatResponse.choices && chatResponse.choices.length > 0) return chatResponse.choices[0].message?.content || 'No content available';
+
+			} catch (error) {
+				return "Désolé, le service est temporairement indisponible. Veuillez réessayer plus tard.";
+			}
 		};
 		
 		const aiResponse = await chatAi();
