@@ -1,3 +1,21 @@
+# Mistral ai chat - Rob-ia
+
+Link: https://rob-ia.netlify.app/
+
+**Technos used** 
+- React Next.js
+- Tailwind
+- Mistral AI API
+
+**.env file**
+
+Add the line:
+
+```sh
+NEXT_PUBLIC_MISTRAL_API_KEY=""
+```
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
