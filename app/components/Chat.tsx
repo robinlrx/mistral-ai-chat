@@ -33,6 +33,7 @@ export default function Chat() {
 
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [userQuestion, setUserQuestion] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 	const chatboxRef = useRef<HTMLDivElement>(null);
 
 	// auto scroll to bottom when new message is displayed
@@ -48,7 +49,9 @@ export default function Chat() {
 	}
 
 	const handleMessage = async () => {
-		if (userQuestion.trim() === '') return;
+		if (userQuestion.trim() === '' || isLoading) return;
+		
+		setIsLoading(true);
 		// add user question
 		setMessages((prevMessages: Message[]) => [...prevMessages, { user: userQuestion, ai: '' } ]);
 		setUserQuestion('');
@@ -64,14 +67,25 @@ export default function Chat() {
 				if (chatResponse && chatResponse.choices && chatResponse.choices.length > 0) return chatResponse.choices[0].message?.content || 'No content available';
 
 			} catch (error) {
-				return "Désolé, le service est temporairement indisponible. Veuillez réessayer plus tard.";
+				if (error instanceof Error && error.message.includes('429')) {
+					return "⏳ Limite de requêtes atteinte. Patientez 1-2 minutes (Free Tier Mistral).";
+				}
+				if (error instanceof Error && error.message.includes('rate_limited')) {
+					return "⏳ Trop de messages. Attendez avant de réessayer.";
+				}
+				console.error('Erreur Mistral:', error);
+				return "❌ Erreur serveurs Mistral. Vérifiez votre connexion.";
 			}
 		};
 		
-		const aiResponse = await chatAi();
-	
-		// update last message with ai response
-		setMessages((prevMessages: Message[]) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
+		try {
+			const aiResponse = await chatAi();
+
+			// update last message with ai response
+			setMessages((prevMessages: Message[]) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
+		} finally {
+			setIsLoading(false);
+		}
 	}
 
 	return (
@@ -101,8 +115,8 @@ export default function Chat() {
 			<Textbox 
 				userValue={userQuestion}
 				onChange={handleChange}
-				onKeyDown={(e) => e.key === "Enter" && handleMessage()}
-				onClick={handleMessage}
+				onKeyDown={(e) => e.key === "Enter" && !isLoading && handleMessage()}
+				onClick={() => !isLoading && handleMessage()}
 			/>
 		</div>
 	);
