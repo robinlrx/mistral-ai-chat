@@ -1,4 +1,4 @@
-
+// Cette route API reçoit les questions de Chat.tsx, les envoie à Groq pour générer une réponse et la renvoie au frontend en protégeant la clé API côté serveur.
 import OpenAI from 'openai';
 
 const groq = new OpenAI({

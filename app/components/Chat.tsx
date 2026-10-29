@@ -71,7 +71,7 @@ export default function Chat() {
 			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.error || 'Erreur API Gemini');
+				throw new Error(data.error || 'Erreur API Groq');
 			}
 
 			setMessages((prevMessages) =>
