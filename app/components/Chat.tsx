@@ -7,14 +7,9 @@ import Loader from './Loader';
 import Textbox from './Textbox';
 
 // libs
-import { Mistral } from '@mistralai/mistralai';
 import Markdown from 'react-markdown';
 import remarkGfm from "remark-gfm";
-import { ContentChunk } from '@mistralai/mistralai/models/components';
 
-// init mistral ai
-const apiKey = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
-const client = new Mistral({apiKey: apiKey});
 
 // google font
 const libreBaskerville = Libre_Baskerville({
@@ -26,7 +21,7 @@ const libreBaskerville = Libre_Baskerville({
 // types
 type Message = {
 	user: string;
-	ai: string | ContentChunk[] | undefined;
+	ai: string | undefined;
 }
 
 export default function Chat() {
@@ -48,45 +43,62 @@ export default function Chat() {
 		setUserQuestion(e.target.value);
 	}
 
+	
 	const handleMessage = async () => {
-		if (userQuestion.trim() === '' || isLoading) return;
-		
+		const question = userQuestion.trim();
+
+		if (!question || isLoading) return;
+
+		const messageIndex = messages.length;
+
 		setIsLoading(true);
-		// add user question
-		setMessages((prevMessages: Message[]) => [...prevMessages, { user: userQuestion, ai: '' } ]);
 		setUserQuestion('');
-		
-		const chatAi = async () => {
-			try {
 
-				const chatResponse = await client.chat.complete({
-					model: 'mistral-small-latest',
-					messages: [{ role: 'user', content: userQuestion }],
-				});
+		setMessages((prevMessages) => [
+			...prevMessages,
+			{ user: question, ai: undefined },
+		]);
 
-				if (chatResponse && chatResponse.choices && chatResponse.choices.length > 0) return chatResponse.choices[0].message?.content || 'No content available';
-
-			} catch (error) {
-				if (error instanceof Error && error.message.includes('429')) {
-					return "⏳ Limite de requêtes atteinte. Patientez 1-2 minutes (Free Tier Mistral).";
-				}
-				if (error instanceof Error && error.message.includes('rate_limited')) {
-					return "⏳ Trop de messages. Attendez avant de réessayer.";
-				}
-				console.error('Erreur Mistral:', error);
-				return "❌ Erreur serveurs Mistral. Vérifiez votre connexion.";
-			}
-		};
-		
 		try {
-			const aiResponse = await chatAi();
+			const response = await fetch('/api/chat', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ question }),
+			});
 
-			// update last message with ai response
-			setMessages((prevMessages: Message[]) => prevMessages.map((message, index) => index === prevMessages.length - 1 ? { ...message, ai: aiResponse } : message ));
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.error || 'Erreur API Gemini');
+			}
+
+			setMessages((prevMessages) =>
+				prevMessages.map((message, index) =>
+					index === messageIndex
+						? { ...message, ai: data.answer }
+						: message
+				)
+			);
+		
+		} catch (error) {
+			console.error('Erreur groq :', error);
+
+			const message = error instanceof Error ? error.message : 'Erreur inconnue';
+
+			setMessages((prevMessages) =>
+				prevMessages.map((item, index) =>
+					index === messageIndex
+						? { ...item, ai: `❌ ${message}` }
+						: item
+				)
+			);
 		} finally {
 			setIsLoading(false);
 		}
-	}
+
+	};
 
 	return (
 		<div className='h-dvh bg-[#F0EEE6] flex flex-col justify-between items-center py-3'>
@@ -97,10 +109,10 @@ export default function Chat() {
 				{messages.map((message: Message, index: number) => (
 					<div key={index}>
 						<p className='bg-[#E5E3D9] justify-self-end mb-2 message-bubble'>{message.user}</p>
-						{message.ai ? (
+						{message.ai !== undefined ? (
 							<div className='bg-[#FAF9F7] justify-self-start message-bubble space-y-2'>
 								{/* @ts-ignore */}
-								<Markdown remarkPlugins={[remarkGfm]}>{message.ai}</Markdown>
+								<Markdown remarkPlugins={[remarkGfm]}>{message.ai ?? ''}</Markdown>
 							</div>
 						) : (
 							// loader
